@@ -1,20 +1,13 @@
 import {
-  IonApp, 
-  IonRouterOutlet,
-  IonTabs,
-  IonTabBar,
-  IonTabButton,
-  IonLabel,
-  IonIcon,
+  IonApp
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router'
-import { home as homeIcon, settings as settingsIcon } from 'ionicons/icons'
 import React, { useState } from 'react';
-import { Redirect, Route } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { AuthContext } from './auth';
+import AppTabs from './AppTabs';
 import LoginPage from './pages/LoginPage';
-import EntryPage from './pages/EntryPage';
-import HomePage from './pages/HomePage';
-import SettingsPage from './pages/SettingsPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const App: React.FC = () => {
 
@@ -22,36 +15,22 @@ const App: React.FC = () => {
   console.log(`rendering app with LoggedIn=${loggedIn}`);
   return (
     <IonApp>
+      <AuthContext.Provider value={{ loggedIn }}>
       <IonReactRouter>
-      <IonTabs>
-          <IonRouterOutlet>
+          <Switch>
               <Route exact path="/login">
-                <LoginPage loggedIn={loggedIn} 
-                  onLogin={() => setLoggedIn(true)}/>
+                <LoginPage onLogin={() => setLoggedIn(true)}/>
               </Route>
-              <Route exact path="/entries">
-                {loggedIn ? <HomePage /> : <Redirect to="/login" />}
+              <Route path="/my">
+                <AppTabs />
               </Route>
-              <Route exact path="/entries/:id">
-                <EntryPage />
+              <Redirect exact path="/" to= "/my/entries"/>
+              <Route>
+                <NotFoundPage />
               </Route>
-              <Route exact path="/settings">
-                <SettingsPage />
-              </Route>
-              <Redirect exact path="/" to= "/entries"/>
-          </IonRouterOutlet>
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="home" href="/entries">
-              <IonIcon icon={homeIcon} />
-              <IonLabel>Home</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="settings" href="/settings">
-              <IonIcon icon={settingsIcon} />
-              <IonLabel>Settings</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>   
+          </Switch>
       </IonReactRouter>
+      </AuthContext.Provider>
     </IonApp>
   );
 };

@@ -8,15 +8,23 @@ import {
 } from '@ionic/react';
 import React from 'react';
 import { Redirect } from 'react-router';
+import { useAuth } from '../auth';
+import { auth } from '../firebase'
 
 interface Props {
-  loggedIn: boolean,
   onLogin: () => void;
 }
 
-const LoginPage: React.FC<Props> = ({loggedIn, onLogin}) => {
+const LoginPage: React.FC<Props> = ({ onLogin }) => {
+  const { loggedIn } = useAuth();
+
+  const handleLogin = async () => {
+    const credential = await auth.signInWithEmailAndPassword('test1@example.org', 'test1234');
+    console.log('credential: ', credential);
+  }
+
   if (loggedIn) {
-    return <Redirect to="/entries" />
+    return <Redirect to="/my/entries" />
   }
   return (
     <IonPage>
@@ -26,7 +34,7 @@ const LoginPage: React.FC<Props> = ({loggedIn, onLogin}) => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <IonButton expand="block" onClick={onLogin}>Login</IonButton>
+        <IonButton expand="block" onClick={handleLogin}>Login</IonButton>
       </IonContent>
     </IonPage>
   );

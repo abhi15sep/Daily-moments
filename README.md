@@ -1,6 +1,6 @@
 # Daily Moments
 
-This example is part of the Ionic React course.
+This example is part of the Ionic React Android app.
 
 ## Links
 
